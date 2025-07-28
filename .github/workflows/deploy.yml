@@ -1,37 +1,29 @@
-name: Terraform
+name: Terraform CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
 
 jobs:
   terraform:
-    name: Terraform Deploy
+    name: Terraform Format & Validate
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: terraform
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.5.0
+      - name: 📦 Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
 
-    - name: Terraform Init
-      run: terraform init
+      - name: 🧪 Terraform Init
+        run: terraform init
 
-    - name: Terraform Plan
-      run: terraform plan -input=false
+      - name: ✅ Terraform Format Check
+        run: terraform fmt -check
 
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-south-1
+      - name: 🔍 Terraform Validate
+        run: terraform validate
