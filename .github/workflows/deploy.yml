@@ -1,17 +1,20 @@
-name: Terraform Plan
+name: Manual Terraform Apply (AWS)
 
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch:  # 👈 Enables manual run via GitHub UI
 
 permissions:
   contents: read
-  pull-requests: write
+  id-token: write
 
 jobs:
   terraform:
+    name: Terraform Apply
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: terraform  # 👈 Update this if your `.tf` files are in a different folder
 
     steps:
       - name: 📥 Checkout code
@@ -27,9 +30,10 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1  # ← Change to your region
+          aws-region: us-east-1  # 👉 Change this if you’re using another AWS region
 
       - name: 🧪 Terraform Init
         run: terraform init
 
-      
+      - name: ⚠️ Terraform Apply (Auto Approve)
+        run: terraform apply -auto-approve
