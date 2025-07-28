@@ -1,0 +1,12 @@
+# Ignore Lambda zip files
+lambda/*.zip
+*.zip
+
+# Terraform state files
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Ignore IDE/editor settings
+.vscode/
+*.log
